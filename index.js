@@ -24,6 +24,37 @@ async function run() {
         const productCollection = client.db("warehouse").collection("grocery");
         const orderCollection = client.db("warehouse").collection("orders");
 
+        app.get('/service', async (req, res) => {
+            const query = {};
+            const cursor = productCollection.find(query);
+            const services = await cursor.toArray();
+            res.send(services);
+        })
+
+        app.get('/service/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productCollection.findOne(query);
+            res.send(result);
+        });
+
+        // Add Product
+        app.post('/service', async (req, res) => {
+            const newProduct = req.body;
+            const result = await productCollection.insertOne(newProduct);
+        })
+
+        //Delete a Product
+        app.delete('/service/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+
+
         app.post("/login", (req, res) => {
             const email = req.body;
 
@@ -34,100 +65,98 @@ async function run() {
 
 
 
-        // Add Product
-    
-        app.post("/uploadPd", async (req, res) => {
-            const product = req.body;
 
-            const tokenInfo = req.headers.authorization;
-            // console.log(tokenInfo)
-            const [email, accessToken] = tokenInfo.split(" ")
-            // console.log(email, accessToken)
 
-            const decoded = verifyToken(accessToken)
 
-            if (email === decoded.email) {
-                const result = await productCollection.insertOne(product);
-                res.send({ success: 'Product Upload Successfully' })
-            }
-            else {
-                res.send({ success: 'UnAuthorized Access' })
-            }
-        })
 
-        // Get Products
-        app.get("/products", async (req, res) => {
-            const products = await productCollection.find({}).toArray();
-            res.send(products);
-        })
-        
-        //Find a User
-        app.get('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const result = await productCollection.findOne(query);
-            res.send(result);
-        });
+        // // Add Product
+
+        // app.post("/uploadPd", async (req, res) => {
+        //     const product = req.body;
+
+        //     const tokenInfo = req.headers.authorization;
+        //     // console.log(tokenInfo)
+        //     const [email, accessToken] = tokenInfo.split(" ")
+        //     // console.log(email, accessToken)
+
+        //     const decoded = verifyToken(accessToken)
+
+        //     if (email === decoded.email) {
+        //         const result = await productCollection.insertOne(product);
+        //         res.send({ success: 'Product Upload Successfully' })
+        //     }
+        //     else {
+        //         res.send({ success: 'UnAuthorized Access' })
+        //     }
+        // })
+
+        // // Get Products
+        // app.get("/products", async (req, res) => {
+        //     const products = await productCollection.find({}).toArray();
+        //     res.send(products);
+        // })
+
+
 
         // update product
-        app.put('/products/:id', async(req, res) =>{
-            const id = req.params.id;
-            const updatedProduct = req.body;
-            const filter = {_id: ObjectId(id)};
-            const options = { upsert: true };
-            const updatedDoc = {
-                $set: {
-                    name: updatedProduct.name,
-                    price: updatedProduct.price
-                }
-            };
-            const result = await productCollection.updateOne(filter, updatedDoc, options);
-            res.send(result);
+        // app.put('/products/:id', async(req, res) =>{
+        //     const id = req.params.id;
+        //     const updatedProduct = req.body;
+        //     const filter = {_id: ObjectId(id)};
+        //     const options = { upsert: true };
+        //     const updatedDoc = {
+        //         $set: {
+        //             name: updatedProduct.name,
+        //             price: updatedProduct.price
+        //         }
+        //     };
+        //     const result = await productCollection.updateOne(filter, updatedDoc, options);
+        //     res.send(result);
 
-        })
+        // })
 
-        //Delete a Product
-        app.delete('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const result = await productCollection.deleteOne(query);
-            res.send(result);
-        })
-
-
+        // //Delete a Product
+        // app.delete('/products/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: ObjectId(id) };
+        //     const result = await productCollection.deleteOne(query);
+        //     res.send(result);
+        // })
 
 
 
 
 
-        app.post("/addOrder", async (req, res) => {
-            const orderInfo = req.body;
-
-            const result = await orderCollection.insertOne(orderInfo);
-            res.send({ success: 'order complete' })
-        })
-
-        
 
 
-        app.get("/orderList", async (req, res) => {
-            const tokenInfo = req.headers.authorization;
+        // app.post("/addOrder", async (req, res) => {
+        //     const orderInfo = req.body;
 
-            console.log(tokenInfo)
-            const [email, accessToken] = tokenInfo.split(" ")
-            // console.log(email, accessToken)
+        //     const result = await orderCollection.insertOne(orderInfo);
+        //     res.send({ success: 'order complete' })
+        // })
 
-            const decoded = verifyToken(accessToken)
 
-            if (email === decoded.email) {
-                const orders = await orderCollection.find({email:email}).toArray();
-                res.send(orders);
-            }
-            else {
-                res.send({ success: 'UnAuthorized Access' })
-            }
 
-        })
+
+        // app.get("/orderList", async (req, res) => {
+        //     const tokenInfo = req.headers.authorization;
+
+        //     console.log(tokenInfo)
+        //     const [email, accessToken] = tokenInfo.split(" ")
+        //     // console.log(email, accessToken)
+
+        //     const decoded = verifyToken(accessToken)
+
+        //     if (email === decoded.email) {
+        //         const orders = await orderCollection.find({email:email}).toArray();
+        //         res.send(orders);
+        //     }
+        //     else {
+        //         res.send({ success: 'UnAuthorized Access' })
+        //     }
+
+        // })
 
     } finally {
         //   await client.close();
@@ -137,24 +166,24 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Grocery Warehouse')
+    res.send('Simple Grocery Warehouse')
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Listening on port ${port}`)
 })
 
 // verify token function
-function verifyToken(token) {
-    let email;
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
-        if (err) {
-            email = 'Invalid email'
-        }
-        if (decoded) {
-            console.log(decoded)
-            email = decoded
-        }
-    });
-    return email;
-}
+// function verifyToken(token) {
+//     let email;
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+//         if (err) {
+//             email = 'Invalid email'
+//         }
+//         if (decoded) {
+//             console.log(decoded)
+//             email = decoded
+//         }
+//     });
+//     return email;
+// }
