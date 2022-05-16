@@ -22,7 +22,7 @@ async function run() {
         console.log('DB Connected');
 
         const productCollection = client.db("warehouse").collection("grocery");
-        const orderCollection = client.db("warehouse").collection("orders");
+        // const orderCollection = client.db("warehouse").collection("orders");
 
         app.get('/service', async (req, res) => {
             const query = {};
@@ -51,6 +51,27 @@ async function run() {
             const result = await productCollection.deleteOne(query);
             res.send(result);
         })
+
+
+
+        // app.get("/orderList", async (req, res) => {
+        //     const tokenInfo = req.headers.authorization;
+
+        //     console.log(tokenInfo)
+        //     const [email, accessToken] = tokenInfo.split(" ")
+        //     // console.log(email, accessToken)
+
+        //     const decoded = verifyToken(accessToken)
+
+        //     if (email === decoded.email) {
+        //         const orders = await productCollection.find({email:email}).toArray();
+        //         res.send(orders);
+        //     }
+        //     else {
+        //         res.send({ success: 'UnAuthorized Access' })
+        //     }
+
+        // })
 
 
 
@@ -139,24 +160,7 @@ async function run() {
 
 
 
-        // app.get("/orderList", async (req, res) => {
-        //     const tokenInfo = req.headers.authorization;
-
-        //     console.log(tokenInfo)
-        //     const [email, accessToken] = tokenInfo.split(" ")
-        //     // console.log(email, accessToken)
-
-        //     const decoded = verifyToken(accessToken)
-
-        //     if (email === decoded.email) {
-        //         const orders = await orderCollection.find({email:email}).toArray();
-        //         res.send(orders);
-        //     }
-        //     else {
-        //         res.send({ success: 'UnAuthorized Access' })
-        //     }
-
-        // })
+        
 
     } finally {
         //   await client.close();
