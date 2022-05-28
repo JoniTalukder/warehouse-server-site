@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const port = process.env.PORT = 5000;
+const port = process.env.PORT || 5000;
 const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
@@ -25,11 +25,12 @@ async function run() {
         // const orderCollection = client.db("warehouse").collection("orders");
 
         app.get('/service', async (req, res) => {
-            const query = {};
+            const email = req.query.email;
+            const query = {email};
             const cursor = productCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
-        })
+        });
 
         app.get('/service/:id', async (req, res) => {
             const id = req.params.id;
@@ -42,6 +43,7 @@ async function run() {
         app.post('/service', async (req, res) => {
             const newProduct = req.body;
             const result = await productCollection.insertOne(newProduct);
+            res.send(result);
         })
 
         //Delete a Product
@@ -160,7 +162,7 @@ async function run() {
 
 
 
-        
+
 
     } finally {
         //   await client.close();
