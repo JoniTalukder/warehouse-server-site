@@ -24,6 +24,14 @@ async function run() {
         const productCollection = client.db("warehouse").collection("grocery");
         // const orderCollection = client.db("warehouse").collection("orders");
 
+        app.post("/login", (req, res) => {
+            const email = req.body;
+
+            const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET);
+
+            res.send({ token })
+        });
+
         app.get('/service', async (req, res) => {
             const email = req.query.email;
             const query = {email};
@@ -78,13 +86,7 @@ async function run() {
 
 
 
-        app.post("/login", (req, res) => {
-            const email = req.body;
-
-            const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET);
-
-            res.send({ token })
-        })
+        
 
 
 
@@ -157,7 +159,13 @@ async function run() {
 
         //     const result = await orderCollection.insertOne(orderInfo);
         //     res.send({ success: 'order complete' })
-        // })
+        // });
+        // app.get('/addOrder/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: ObjectId(id) };
+        //     const result = await orderCollection.findOne(query);
+        //     res.send(result);
+        // });
 
 
 
